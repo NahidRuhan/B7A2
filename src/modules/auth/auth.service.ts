@@ -35,7 +35,6 @@ const loginUserIntoDB = async (payLoad:AuthUser) => {
     const jwtPayload = {
         id: user.id,
         name: user.name,
-        email: user.email,
         role: user.role
     }
     const token = jwt.sign(jwtPayload, config.secret, { expiresIn: '1d' })
