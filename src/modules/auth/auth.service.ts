@@ -1,6 +1,8 @@
+import config from "../../config";
 import { pool } from "../../db";
-import type { IUser } from "./auth.interface";
+import type { AuthUser, IUser } from "./auth.interface";
 import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
 
 const createUserIntoDB = async (payLoad: IUser) => {
     const {name,email,password,role} = payLoad
@@ -16,6 +18,33 @@ const createUserIntoDB = async (payLoad: IUser) => {
     return result
 }
 
+const loginUserIntoDB = async (payLoad:AuthUser) => {
+    const {email,password} = payLoad
+
+
+    const userData = await pool.query(`SELECT * FROM users WHERE email=$1`,[email])
+    const user = userData.rows[0]
+    if(!user) throw new Error("Invalid Credentials")
+
+
+    const isPasswordMatched = await bcrypt.compare(password,user.password)
+    console.log(isPasswordMatched)
+    if(!isPasswordMatched) throw new Error("Invalid Credential")
+
+
+    const jwtPayload = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+    }
+    const token = jwt.sign(jwtPayload, config.secret, { expiresIn: '1d' })
+
+    delete user.password
+
+    return { token, user }
+}
+
 export const authService = {
-    createUserIntoDB
+    createUserIntoDB, loginUserIntoDB
 }

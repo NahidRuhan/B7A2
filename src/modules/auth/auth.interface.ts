@@ -4,3 +4,8 @@ export interface IUser {
   password: string;
   role?: 'contributor' | 'maintainer'
 }
+
+export interface AuthUser {
+  email: string,
+  password: string
+}
