@@ -8,3 +8,9 @@ export interface IIssue {
   created_at?: Date | string;
   updated_at?: Date | string;
 }
+
+export interface Filters {
+  sort?: string,
+  type?:string,
+  status?: string
+}

@@ -1,7 +1,7 @@
 export type TResponse<T> = {
   statusCode: number;
   success: boolean;
-  message: string;
+  message?: string;
   data?: T;
   error?:any
 };

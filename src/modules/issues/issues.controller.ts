@@ -7,7 +7,7 @@ const createIssue = async (req: Request, res: Response, next: NextFunction) => {
   const userID = req.user?.id as number;
   try {
     // Validate type (must be provided and strictly match one of the allowed values)
-    if (!body.type || !['bug', 'feature_request'].includes(body.type)) {
+    if (!body.type || !["bug", "feature_request"].includes(body.type)) {
       return sendResponse(res, {
         statusCode: 400,
         success: false,
@@ -16,11 +16,15 @@ const createIssue = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     // Validate status (optional, but if provided, must strictly match one of the allowed values)
-    if (body.status && !['open', 'in_progress', 'resolved'].includes(body.status)) {
+    if (
+      body.status &&
+      !["open", "in_progress", "resolved"].includes(body.status)
+    ) {
       return sendResponse(res, {
         statusCode: 400,
         success: false,
-        message: "Invalid status. Must be 'open', 'in_progress', or 'resolved'.",
+        message:
+          "Invalid status. Must be 'open', 'in_progress', or 'resolved'.",
       });
     }
 
@@ -29,7 +33,27 @@ const createIssue = async (req: Request, res: Response, next: NextFunction) => {
       statusCode: 201,
       success: true,
       message: "Issue created successfully",
-      data: result
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getAllIssue = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { sort, type, status } = req.query;
+    
+    const result = await issueService.getAllIssueFromDB({
+      sort: sort as string,
+      type: type as string,
+      status: status as string
+    });
+    
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      data: result,
     });
   } catch (error) {
     next(error);
@@ -38,4 +62,5 @@ const createIssue = async (req: Request, res: Response, next: NextFunction) => {
 
 export const issueController = {
   createIssue,
+  getAllIssue,
 };
