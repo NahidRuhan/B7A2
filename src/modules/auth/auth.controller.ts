@@ -1,11 +1,11 @@
-import type { Request, Response } from "express";
+import type { Request, Response, NextFunction } from "express";
 import { authService } from "./auth.service";
 import sendResponse from "../../utility/sendResponse";
 
-const createUser = async (req: Request, res: Response) => {
+const createUser = async (req: Request, res: Response, next: NextFunction) => {
   const body = req.body;
   try {
-    // Validate role if it is provided
+
     if (body.role && !['contributor', 'maintainer'].includes(body.role)) {
       return sendResponse(res, {
         statusCode: 400,
@@ -21,16 +21,12 @@ const createUser = async (req: Request, res: Response) => {
       message: "User registered successfully",
       data: result.rows[0],
     });
-  } catch (error: any) {
-    sendResponse(res, {
-      statusCode: 500,
-      success: false,
-      message: error.message,
-    });
+  } catch (error) {
+    next(error);
   }
 };
 
-const loginUser = async (req:Request,res:Response) => {
+const loginUser = async (req: Request, res: Response, next: NextFunction) => {
   const body = req.body
   try {
     const result = await authService.loginUserIntoDB(body)
@@ -40,12 +36,8 @@ const loginUser = async (req:Request,res:Response) => {
       message: "Login successful",
       data: result,
     });
-  } catch (error: any) {
-    sendResponse(res, {
-      statusCode: 500,
-      success: false,
-      message: error.message,
-    });
+  } catch (error) {
+    next(error);
   }
 }
 

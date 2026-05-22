@@ -5,7 +5,6 @@ import express, {
 } from "express";
 import globalErrorHandler from "./middleware/globalErrorHandler";
 import { authRoute } from "./modules/auth/auth.route";
-import auth from "./middleware/auth";
 import { issuesRoute } from "./modules/issues/issues.route";
 
 //  Middleware 

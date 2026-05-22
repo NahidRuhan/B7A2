@@ -44,7 +44,7 @@ const auth = (...roles: Roles[]) => {
         return sendResponse(res, {
           statusCode: 403,
           success: false,
-          message: "Forbidden",
+          message: "Forbidden access",
         });
       }
 
