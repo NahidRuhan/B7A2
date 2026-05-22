@@ -2,7 +2,7 @@
 
 A robust, role-based Issue Tracking REST API built with Node.js, Express, TypeScript, and PostgreSQL. It allows users to authenticate, report issues, and manage them securely through Resource Ownership and Role-Based Access Control (RBAC).
 
-**Live URL:** [Insert Live URL Here]
+**Live URL:** [\[https://issue-tracking-api.vercel.app\]](https://issue-tracking-api.vercel.app/)
 
 ## Features
 
