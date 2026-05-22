@@ -5,3 +5,5 @@ export type TResponse<T> = {
   data?: T;
   error?:any
 };
+
+export type Roles = "maintainer" | "contributor"

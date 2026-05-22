@@ -60,7 +60,11 @@ const getAllIssue = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const getSingleIssue = async (req: Request,res: Response,next: NextFunction) => {
+const getSingleIssue = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { id } = req.params;
     const result = await issueService.getSingleIssueFromDB(id as string);
@@ -68,7 +72,7 @@ const getSingleIssue = async (req: Request,res: Response,next: NextFunction) => 
       return sendResponse(res, {
         statusCode: 404,
         success: false,
-        message: "Issue not found!"
+        message: "Issue not found!",
       });
     }
     sendResponse(res, {
@@ -81,8 +85,30 @@ const getSingleIssue = async (req: Request,res: Response,next: NextFunction) => 
   }
 };
 
+const deleteIssue = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const result = await issueService.deleteIssueFromDB(id as string);
+    if (!result) {
+      return sendResponse(res, {
+        statusCode: 404,
+        success: false,
+        message: "Issue not found!",
+      });
+    }
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Issue deleted successfully"
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const issueController = {
   createIssue,
   getAllIssue,
   getSingleIssue,
+  deleteIssue,
 };

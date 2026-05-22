@@ -3,6 +3,7 @@ import sendResponse from "../utility/sendResponse";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import config from "../config";
 import { pool } from "../db";
+import type { Roles } from "../types";
 
 declare global {
   namespace Express {
@@ -12,7 +13,7 @@ declare global {
   }
 }
 
-const auth = () => {
+const auth = (...roles: Roles[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const token = req.headers.authorization;
@@ -36,6 +37,14 @@ const auth = () => {
           statusCode: 404,
           success: false,
           message: "User not found",
+        });
+      }
+
+      if (roles.length && !roles.includes(user.role)) {
+        return sendResponse(res, {
+          statusCode: 403,
+          success: false,
+          message: "Forbidden",
         });
       }
 
