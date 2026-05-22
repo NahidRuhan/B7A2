@@ -3,7 +3,7 @@ export type TResponse<T> = {
   success: boolean;
   message?: string;
   data?: T;
-  errors?: any;
+  errors?: unknown;
 };
 
 export const USER_ROLE = {

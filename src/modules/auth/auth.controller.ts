@@ -2,9 +2,10 @@ import type { Request, Response, NextFunction } from "express";
 import { authService } from "./auth.service";
 import sendResponse from "../../utility/sendResponse";
 import { StatusCodes } from "http-status-codes";
+import type { AuthUser, IUser } from "./auth.interface";
 
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
-  const body = req.body;
+  const body: IUser = req.body;
   try {
 
     if (body.role && !['contributor', 'maintainer'].includes(body.role)) {
@@ -29,7 +30,7 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const loginUser = async (req: Request, res: Response, next: NextFunction) => {
-  const body = req.body
+  const body: AuthUser = req.body;
   try {
     const result = await authService.loginUserIntoDB(body)
         sendResponse(res, {

@@ -16,7 +16,7 @@ const createIssueIntoDB = async (payLoad: IIssue, userID: number) => {
 const getAllIssueFromDB = async (filters: Filters) => {
   const { sort, type, status } = filters;
 
-  const values: any[] = [];
+  const values: string[] = [];
   const conditions: string[] = [];
 
   if (type) conditions.push(`type = $${values.push(type)}`);
