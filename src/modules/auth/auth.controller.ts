@@ -8,6 +8,7 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
   const body: IUser = req.body;
   try {
 
+    // stops from posting invalid roles into DB
     if (body.role && !['contributor', 'maintainer'].includes(body.role)) {
       return sendResponse(res, {
         statusCode: StatusCodes.BAD_REQUEST,
@@ -33,7 +34,17 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
   const body: AuthUser = req.body;
   try {
     const result = await authService.loginUserIntoDB(body)
-        sendResponse(res, {
+    
+    if (result === "invalid_credentials") {
+      return sendResponse(res, {
+        statusCode: StatusCodes.UNAUTHORIZED,
+        success: false,
+        message: "Unauthorized",
+        errors: "Invalid email or password",
+      });
+    }
+
+    sendResponse(res, {
       statusCode: StatusCodes.OK,
       success: true,
       message: "Login successful",

@@ -6,6 +6,8 @@ import { pool } from "../db";
 import type { Roles } from "../types";
 import { StatusCodes } from "http-status-codes";
 
+//  code to fix req.user doesn't exist error
+
 declare global {
   namespace Express {
     interface Request {

@@ -7,6 +7,8 @@ const createIssue = async (req: Request, res: Response, next: NextFunction) => {
   const body = req.body;
   const userID = req.user?.id as number;
   try {
+
+    // stops from posting invalid type 
     if (!body.type || !["bug", "feature_request"].includes(body.type)) {
       return sendResponse(res, {
         statusCode: StatusCodes.BAD_REQUEST,
@@ -15,7 +17,7 @@ const createIssue = async (req: Request, res: Response, next: NextFunction) => {
         errors: "Invalid type. Must be either 'bug' or 'feature_request'.",
       });
     }
-
+    // stops from posting invalid workflow status 
     if (
       body.status &&
       !["open", "in_progress", "resolved"].includes(body.status)

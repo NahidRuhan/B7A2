@@ -23,12 +23,12 @@ const loginUserIntoDB = async (payLoad:AuthUser) => {
 
 
     const userData = await pool.query(`SELECT * FROM users WHERE email=$1`,[email])
+    if(userData.rows.length === 0) return "invalid_credentials"
     const user = userData.rows[0]
-    if(userData.rows.length === 0) throw new Error("Invalid Credentials")
 
 
     const isPasswordMatched = await bcrypt.compare(password,user.password)
-    if(!isPasswordMatched) throw new Error("Invalid Credential")
+    if(!isPasswordMatched) return "invalid_credentials"
 
 
     const jwtPayload = {

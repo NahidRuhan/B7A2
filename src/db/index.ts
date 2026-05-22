@@ -5,6 +5,8 @@ export const pool = new Pool({ connectionString: config.connection_string });
 
 export const initDB = async () => {
   try {
+
+    // creating users database
     
     await pool.query(/*sql*/ `
         CREATE TABLE IF NOT EXISTS users(
@@ -16,6 +18,8 @@ export const initDB = async () => {
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW())            
      `);
+     
+     // creating issues database
 
     await pool.query(/*sql*/ `
         CREATE TABLE IF NOT EXISTS issues(
