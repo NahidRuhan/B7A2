@@ -1,4 +1,6 @@
 import { pool } from "../../db";
+import { USER_ROLE, type Roles } from "../../types";
+import sendResponse from "../../utility/sendResponse";
 import type { Filters, IIssue } from "./issues.interface";
 
 const createIssueIntoDB = async (payLoad: IIssue, userID: number) => {
@@ -52,9 +54,11 @@ const getAllIssueFromDB = async (filters: Filters) => {
   return issues;
 };
 
-const getSingleIssueFromDB = async (id:string) => {
-  const issueResult = await pool.query(`SELECT * FROM issues WHERE id = $1`, [id]);
-  
+const getSingleIssueFromDB = async (id: string) => {
+  const issueResult = await pool.query(`SELECT * FROM issues WHERE id = $1`, [
+    id,
+  ]);
+
   if (issueResult.rows.length === 0) {
     return null;
   }
@@ -62,7 +66,7 @@ const getSingleIssueFromDB = async (id:string) => {
   const issue = issueResult.rows[0];
   const reporterResult = await pool.query(
     `SELECT id, name, role FROM users WHERE id = $1`,
-    [issue.reporter_id]
+    [issue.reporter_id],
   );
 
   const { reporter_id, created_at, updated_at, ...rest } = issue;
@@ -75,17 +79,53 @@ const getSingleIssueFromDB = async (id:string) => {
   };
 };
 
-const deleteIssueFromDB = async (id:string) => {
+const updateIssueIntoDB = async (payLoad: IIssue, id: string, role: Roles, userID: number) => {
+  const { title, description, type, status } = payLoad;
+
+  // 1. Fetch the specific issue to verify ownership
+  const checking = await pool.query(`SELECT reporter_id FROM issues WHERE id=$1`, [id]);
+  
+  if (checking.rowCount === 0) {
+    return "not_found";
+  }
+
+  // 2. Enforce Resource Ownership (Contributor can only update their own issue)
+  if (role !== USER_ROLE.maintainer && Number(checking.rows[0].reporter_id) !== Number(userID)) {
+    return "forbidden";
+  }
+
+  const result = await pool.query(/*sql*/
+    `UPDATE issues SET
+     title=COALESCE($1,title),
+     description=COALESCE($2,description),
+     type=COALESCE($3,type),
+     status=COALESCE($4,status),
+     updated_at=NOW()
+     WHERE id=$5
+     RETURNING *
+    `,
+    [title, description, type, status, id],
+  );
+
+  if (result.rowCount === 0) {
+    return "not_found";
+  }
+
+  return result.rows[0];
+};
+
+const deleteIssueFromDB = async (id: string) => {
   const result = await pool.query(`DELETE FROM issues WHERE id = $1`, [id]);
   if (result.rowCount === 0) {
     return null;
   }
   return result;
-}
+};
 
 export const issueService = {
   createIssueIntoDB,
   getAllIssueFromDB,
   getSingleIssueFromDB,
-  deleteIssueFromDB
+  updateIssueIntoDB,
+  deleteIssueFromDB,
 };

@@ -85,6 +85,57 @@ const getSingleIssue = async (
   }
 };
 
+const updateIssue = async (req: Request, res: Response, next: NextFunction) => {
+  const body = req.body
+  const {id} = req.params
+  const role = req.user?.role
+  const userID = req.user?.id
+  try {
+    if (body.type && !["bug", "feature_request"].includes(body.type)) {
+      return sendResponse(res, {
+        statusCode: 400,
+        success: false,
+        message: "Invalid type. Must be either 'bug' or 'feature_request'.",
+      });
+    }
+
+    if (body.status && !["open", "in_progress", "resolved"].includes(body.status)) {
+      return sendResponse(res, {
+        statusCode: 400,
+        success: false,
+        message: "Invalid status. Must be 'open', 'in_progress', or 'resolved'.",
+      });
+    }
+
+    const result = await issueService.updateIssueIntoDB(body, id as string, role, userID as number)
+    
+    if (result === "not_found") {
+      return sendResponse(res, {
+        statusCode: 404,
+        success: false,
+        message: "Issue not found!",
+      });
+    }
+
+    if (result === "forbidden") {
+      return sendResponse(res, {
+        statusCode: 403,
+        success: false,
+        message: "Forbidden: You can only update your own issues",
+      });
+    }
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Issue updated successfully",
+      data: result,
+    });
+  } catch (error) {
+    next(error)
+  }
+}
+
 const deleteIssue = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
@@ -110,5 +161,6 @@ export const issueController = {
   createIssue,
   getAllIssue,
   getSingleIssue,
-  deleteIssue,
+  updateIssue,
+  deleteIssue
 };

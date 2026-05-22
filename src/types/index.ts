@@ -6,4 +6,9 @@ export type TResponse<T> = {
   error?:any
 };
 
-export type Roles = "maintainer" | "contributor"
+export const USER_ROLE = {
+  maintainer : "maintainer",
+  contributor : "contributor"
+} as const
+
+export type Roles = keyof typeof USER_ROLE
