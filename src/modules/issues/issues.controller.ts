@@ -42,7 +42,7 @@ const createIssue = async (req: Request, res: Response, next: NextFunction) => {
 
 const getAllIssue = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { sort, type, status } = req.query;
+    const { sort = "newest", type, status } = req.query;
 
     const result = await issueService.getAllIssueFromDB({
       sort: sort as string,
@@ -122,6 +122,22 @@ const updateIssue = async (req: Request, res: Response, next: NextFunction) => {
         statusCode: 403,
         success: false,
         message: "Forbidden: You can only update your own issues",
+      });
+    }
+
+    if (result === "forbidden_status") {
+      return sendResponse(res, {
+        statusCode: 403,
+        success: false,
+        message: "Forbidden: Contributors can only update open issues",
+      });
+    }
+
+    if (result === "forbidden_status_update") {
+      return sendResponse(res, {
+        statusCode: 403,
+        success: false,
+        message: "Forbidden: Contributors cannot update issue status",
       });
     }
 

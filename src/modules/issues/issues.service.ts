@@ -1,6 +1,5 @@
 import { pool } from "../../db";
 import { USER_ROLE, type Roles } from "../../types";
-import sendResponse from "../../utility/sendResponse";
 import type { Filters, IIssue } from "./issues.interface";
 
 const createIssueIntoDB = async (payLoad: IIssue, userID: number) => {
@@ -79,22 +78,39 @@ const getSingleIssueFromDB = async (id: string) => {
   };
 };
 
-const updateIssueIntoDB = async (payLoad: IIssue, id: string, role: Roles, userID: number) => {
+const updateIssueIntoDB = async (
+  payLoad: IIssue,
+  id: string,
+  role: Roles,
+  userID: number,
+) => {
   const { title, description, type, status } = payLoad;
 
-  // 1. Fetch the specific issue to verify ownership
-  const checking = await pool.query(`SELECT reporter_id FROM issues WHERE id=$1`, [id]);
-  
+  const checking = await pool.query(
+    `SELECT reporter_id, status FROM issues WHERE id=$1`,
+    [id],
+  );
+
   if (checking.rowCount === 0) {
     return "not_found";
   }
 
-  // 2. Enforce Resource Ownership (Contributor can only update their own issue)
-  if (role !== USER_ROLE.maintainer && Number(checking.rows[0].reporter_id) !== Number(userID)) {
-    return "forbidden";
+  const issueToUpdate = checking.rows[0];
+
+  if (role !== USER_ROLE.maintainer) {
+    if (issueToUpdate.reporter_id !== userID) {
+      return "forbidden";
+    }
+    if (issueToUpdate.status !== "open") {
+      return "forbidden_status";
+    }
+    if (status) {
+      return "forbidden_status_update";
+    }
   }
 
-  const result = await pool.query(/*sql*/
+  const result = await pool.query(
+    /*sql*/
     `UPDATE issues SET
      title=COALESCE($1,title),
      description=COALESCE($2,description),
