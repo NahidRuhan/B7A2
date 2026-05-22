@@ -3,6 +3,7 @@ import express, {
   type Request,
   type Response,
 } from "express";
+import cors from "cors";
 import globalErrorHandler from "./middleware/globalErrorHandler";
 import { authRoute } from "./modules/auth/auth.route";
 import { issuesRoute } from "./modules/issues/issues.route";
@@ -10,6 +11,9 @@ import { issuesRoute } from "./modules/issues/issues.route";
 //  Middleware 
 
 const app : Application = express()
+app.use(cors({
+  origin: "http://localhost:8000"
+}))
 app.use(express.json())
 
 app.get('/', (req:Request, res:Response) => {
