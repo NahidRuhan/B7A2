@@ -4,6 +4,7 @@ import jwt, { type JwtPayload } from "jsonwebtoken";
 import config from "../config";
 import { pool } from "../db";
 import type { Roles } from "../types";
+import { StatusCodes } from "http-status-codes";
 
 declare global {
   namespace Express {
@@ -20,9 +21,10 @@ const auth = (...roles: Roles[]) => {
 
       if (!token) {
         return sendResponse(res, {
-          statusCode: 401,
+          statusCode: StatusCodes.UNAUTHORIZED,
           success: false,
-          message: "Unauthorized access",
+          message: "Unauthorized",
+          errors: "Missing, expired, or invalid JWT token",
         });
       }
 
@@ -34,17 +36,19 @@ const auth = (...roles: Roles[]) => {
 
       if (userData.rows.length === 0) {
         return sendResponse(res, {
-          statusCode: 404,
+          statusCode: StatusCodes.UNAUTHORIZED,
           success: false,
-          message: "User not found",
+          message: "Unauthorized",
+          errors: "Missing, expired, or invalid JWT token",
         });
       }
 
       if (roles.length && !roles.includes(user.role)) {
         return sendResponse(res, {
-          statusCode: 403,
+          statusCode: StatusCodes.FORBIDDEN,
           success: false,
-          message: "Forbidden access",
+          message: "Forbidden",
+          errors: "Valid token but insufficient role/permissions",
         });
       }
 
