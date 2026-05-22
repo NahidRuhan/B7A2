@@ -50,7 +50,7 @@ Stores issue reports and references the user who reported them.
 ### Authentication (`/api/auth`)
 | Method | Endpoint | Description | Access |
 | :--- | :--- | :--- | :--- |
-| POST | `/api/auth/register` | Register a new user | Public |
+| POST | `/api/auth/signup` | Register a new user | Public |
 | POST | `/api/auth/login` | Login and receive a JWT | Public |
 
 *(Note: Registration/login routes map to your configured auth routes).*
@@ -79,8 +79,8 @@ Follow these instructions to run the project locally.
 
 ### 2. Clone the Repository
 ```bash
-git clone <your-repository-url>
-cd <repository-folder>
+git clone <repository-url>
+cd <folder>
 ```
 
 ### 3. Install Dependencies
@@ -91,7 +91,7 @@ npm install
 ### 4. Environment Variables
 Create a `.env` file in the root directory and add the following keys:
 ```env
-PORT=8000
+PORT=port
 DATABASE_URL=postgres://username:password@localhost:5432/your_database
 JWT_SECRET=your_super_secret_key
 ```
