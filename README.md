@@ -62,7 +62,7 @@ Stores issue reports and references the user who reported them.
 | GET | `/api/issues` | Retrieve all issues (Supports filters) | Public |
 | GET | `/api/issues/:id` | Retrieve a specific issue by ID | Public |
 | PUT | `/api/issues/:id` | Update an issue | Maintainer / Contributor (Own open issues) |
-| DELETE | `/api/issues/:id` | Delete an issue | Maintainer / Contributor (Own open issues) |
+| DELETE | `/api/issues/:id` | Delete an issue | Maintainer |
 
 #### Query Parameters for `GET /api/issues`
 - `sort`: `newest` (default), `oldest`
