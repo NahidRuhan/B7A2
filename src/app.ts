@@ -17,7 +17,15 @@ app.use(cors({
 app.use(express.json())
 
 app.get('/', (req:Request, res:Response) => {
-  res.send('Welcome to issue tracking API')
+  res.status(200).json({
+    success: true,
+    message: "Welcome to the Issue Tracking API",
+    version: "1.0.0",
+    endpoints: {
+      auth: "/api/auth",
+      issues: "/api/issues"
+    }
+  });
 })
 
 //  API 
