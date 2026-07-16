@@ -22,6 +22,20 @@ A robust, role-based Issue Tracking REST API built with Node.js, Express, TypeSc
 - **Authentication:** JSON Web Tokens (`jsonwebtoken`)
 - **Utilities:** `cors`, `http-status-codes`
 
+## 📦 Dependencies
+
+The backend server relies on a Node.js ecosystem configured with TypeScript and Express.
+
+### Core Dependencies
+- **Core Framework & Utils:** `express` (^5.2.1), `dotenv` (^17.4.2), `http-status-codes` (^2.3.0)
+- **Database:** `pg` (^8.21.0)
+- **Security & Middleware:** `cors` (^2.8.6), `bcrypt` (^6.0.0), `jsonwebtoken` (^9.0.3)
+- **Build Tools:** `tsup` (^8.5.1)
+
+### Development Dependencies
+- **TypeScript & Execution:** `typescript` (^6.0.3), `tsx` (^4.22.3)
+- **Type Definitions:** `@types/node` (^25.9.1), `@types/express` (^5.0.6), `@types/cors` (^2.8.19), `@types/jsonwebtoken` (^9.0.10), `@types/bcrypt` (^6.0.0), `@types/pg` (^8.20.0)
+
 ## Database Schema Summary
 
 The application utilizes a PostgreSQL relational database with two core tables:
